@@ -1,11 +1,9 @@
-package it.easytechs.difacile.communication.db.entities;
+package it.easytechs.difacile.communication.api.common;
 
-import java.util.Date;
-import it.easytechs.difacile.common.db.entities.MyObject;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+public class CreateCommunication {
 
-public class Communication extends MyObject {
-		
 	private String date;
 	private Long fromUserId;
 	private Long toUserId;
@@ -14,22 +12,11 @@ public class Communication extends MyObject {
 	private String fullText;
 	
 	
-	private String customerName;
-	
-	
-	
-	public String getCustomerName() {
-		return customerName;
-	}
-
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
-	}
-
-	public Communication(){
+	public CreateCommunication(){
 		
 	}
-
+	
+	@JsonProperty
 	public String getDate() {
 		return date;
 	}
@@ -39,7 +26,7 @@ public class Communication extends MyObject {
 		this.date = date;
 	}
 
-
+	@JsonProperty
 	public Long getFromUserId() {
 		return fromUserId;
 	}
@@ -49,17 +36,17 @@ public class Communication extends MyObject {
 		this.fromUserId = fromUserId;
 	}
 
-
+	@JsonProperty
 	public Long getToUserId() {
 		return toUserId;
 	}
 
-
+	@JsonProperty
 	public void setToUserId(Long toUserId) {
 		this.toUserId = toUserId;
 	}
 
-
+	@JsonProperty
 	public String getToUserEmail() {
 		return toUserEmail;
 	}
@@ -69,7 +56,7 @@ public class Communication extends MyObject {
 		this.toUserEmail = toUserEmail;
 	}
 
-
+	@JsonProperty
 	public String getShortText() {
 		return shortText;
 	}
@@ -79,7 +66,7 @@ public class Communication extends MyObject {
 		this.shortText = shortText;
 	}
 
-
+	@JsonProperty
 	public String getFullText() {
 		return fullText;
 	}
@@ -88,5 +75,5 @@ public class Communication extends MyObject {
 	public void setFullText(String fullText) {
 		this.fullText = fullText;
 	}
-
+	
 }

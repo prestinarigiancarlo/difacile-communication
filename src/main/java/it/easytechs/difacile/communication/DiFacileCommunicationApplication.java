@@ -32,6 +32,7 @@ import it.easytechs.difacile.common.payment.braintree.BraintreePayment;
 import it.easytechs.difacile.common.payment.paypal.PayPalPayment;
 import it.easytechs.difacile.communication.core.CommunicationManager;
 import it.easytechs.difacile.communication.core.CommunicationManagerImpl;
+import it.easytechs.difacile.communication.db.repository.mongodb.CommunicationRepository;
 import it.easytechs.difacile.communication.resources.CommunicationResource;
 import it.easytechs.difacile.practice.core.procedure.ProcedureManager;
 import it.easytechs.difacile.practice.core.procedure.ProcedureManagerImpl;
@@ -155,7 +156,9 @@ public class DiFacileCommunicationApplication  extends Application<DiFacileCommu
         /*ProcedureRepository procedureRepository = new ProcedureRepository(mongoDbConnection,"procedures");        
         ProcedureManager procedureManager = new ProcedureManagerImpl(procedureRepository);*/
         
-        CommunicationManager communicationManager = new CommunicationManagerImpl();
+        CommunicationRepository communicationRepository = new CommunicationRepository(mongoDbConnection,"communications");
+        
+        CommunicationManager communicationManager = new CommunicationManagerImpl(cacheManager, communicationRepository);
         CommunicationResource communicationResource = new CommunicationResource(
         		communicationManager, casUserManager, userManager);
 
