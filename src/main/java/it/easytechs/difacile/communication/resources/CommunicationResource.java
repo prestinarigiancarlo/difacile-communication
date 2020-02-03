@@ -19,8 +19,11 @@ import it.easytechs.difacile.practice.api.procedure.*;
 import it.easytechs.difacile.practice.core.procedure.DocumentManager;
 import it.easytechs.difacile.practice.core.procedure.ProcedureManager;
 import it.easytechs.difacile.practice.db.entities.Procedure;
+import it.easytechs.difacile.user.core.user.CasUserManager;
+import it.easytechs.difacile.user.core.user.UserManager;
 import it.easytexhs.difacile.practice.utils.DocxHelper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -36,19 +39,21 @@ import java.util.List;
 public class CommunicationResource {
 
 	private static final DiFacileLogger logger= DiFacileLoggerFactory.getLogger(CommunicationResource.class.getCanonicalName());
-    private ProcedureManager procedureManager;
     private CommunicationManager communicationManager;
+    private CasUserManager casUserManager;
+    private UserManager userManager;
     
-	public CommunicationResource(ProcedureManager procedureManager, CommunicationManager communicationManager) {
-		this.procedureManager=procedureManager;
+	public CommunicationResource(CommunicationManager communicationManager, CasUserManager casUserManager, UserManager userManager) {
 		this.communicationManager=communicationManager;
+		this.casUserManager=casUserManager;
+		this.userManager=userManager;
 	}
 
 	@GET
 	@RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
 	@Path("/list")
 	@ApiOperation(value = "List of user communication", response = CommunicationList.class)
-	public Response communicationsList(@Auth User user){
+	public Response communicationsList(@Auth @Nonnull User user){
 		logger.info(" communicationsList--> start");
 
 		List<Communication> communications = this.communicationManager.getCommunications(user);

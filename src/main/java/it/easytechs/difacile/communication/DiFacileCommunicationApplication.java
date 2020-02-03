@@ -109,6 +109,11 @@ public class DiFacileCommunicationApplication  extends Application<DiFacileCommu
                 configuration.getMongoDbFactory().getUser(),
                 configuration.getMongoDbFactory().getPassword());
         
+        MongoDbConnection casMongoDbConnection = new MongoDbConnection(configuration.getCasMongoDbFactory().getUrl(),
+                configuration.getCasMongoDbFactory().getDatabase(),
+                configuration.getCasMongoDbFactory().getUser(),
+                configuration.getCasMongoDbFactory().getPassword());
+        
         //Email settings
         EmailSender emailSender = null;
         if(configuration.getEmailSettings()!=null){
@@ -120,25 +125,26 @@ public class DiFacileCommunicationApplication  extends Application<DiFacileCommu
         //Factory
         CacheManager cacheManager = new InMemoryCache();
         Repository registeredUserRepository = new RegisteredUsersRepository(mongoDbConnection,"registeredUsers");
+        Repository casUserRepository = new CasUserRepository(casMongoDbConnection,"users");
         Repository userRepository = new UserRepository(mongoDbConnection,"users");
 
         DiFacileUserFactory diFacileUserFactory = new DiFacileUserFactory(
                 cacheManager
         );
-
-
         RegistrationManager registrationmanager = new RegistrationManagerImpl(cacheManager, registeredUserRepository);
+        CasUserManager casUserManager = new CasUserManagerImpl(casUserRepository, emailSender, configuration.getIdpSettings());
+        UserManager userManager = new UserManagerImpl(userRepository, casUserRepository);
 
         final UserResource userResource = new UserResource(
                 diFacileUserFactory,
                 registrationmanager,
-                null,
-                null);
+                casUserManager,
+                userManager);
         environment.jersey().register(userResource);
 
         final PrivateResource privateResource = new PrivateResource(
-                null,
-                null);
+                userManager,
+                casUserManager);
         environment.jersey().register(privateResource);
 
         /*final JdbiFactory factory = new JdbiFactory();
@@ -146,12 +152,12 @@ public class DiFacileCommunicationApplication  extends Application<DiFacileCommu
         jdbi.installPlugin(new SqlObjectPlugin());
         environment.jersey().register(new UserDAO(jdbi));*/
 
-        ProcedureRepository procedureRepository = new ProcedureRepository(mongoDbConnection,"procedures");        
-        ProcedureManager procedureManager = new ProcedureManagerImpl(procedureRepository);
+        /*ProcedureRepository procedureRepository = new ProcedureRepository(mongoDbConnection,"procedures");        
+        ProcedureManager procedureManager = new ProcedureManagerImpl(procedureRepository);*/
         
         CommunicationManager communicationManager = new CommunicationManagerImpl();
         CommunicationResource communicationResource = new CommunicationResource(
-        		procedureManager, communicationManager);
+        		communicationManager, casUserManager, userManager);
 
         environment.jersey().register(communicationResource);
         
